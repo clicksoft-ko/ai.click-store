@@ -477,7 +477,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\WebClick\\click-store\\src\\prisma\\client",
+      "value": "F:\\web\\click-store\\click-store\\src\\prisma\\client",
       "fromEnvVar": null
     },
     "config": {
