@@ -232,6 +232,22 @@ exports.Prisma.ProductListImageScalarFieldEnum = {
   image: 'image'
 };
 
+exports.Prisma.ProductSoldOutScalarFieldEnum = {
+  id: 'id',
+  smCode: 'smCode',
+  soldOut: 'soldOut',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
+exports.Prisma.ProductNoticeScalarFieldEnum = {
+  id: 'id',
+  smCode: 'smCode',
+  message: 'message',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.CsScalarFieldEnum = {
   gubun: 'gubun',
   code: 'code',
@@ -475,6 +491,8 @@ exports.Prisma.ModelName = {
   ProductLog: 'ProductLog',
   ProductListWebBunryu: 'ProductListWebBunryu',
   ProductListImage: 'ProductListImage',
+  ProductSoldOut: 'ProductSoldOut',
+  ProductNotice: 'ProductNotice',
   Cs: 'Cs',
   Cart: 'Cart',
   CartItem: 'CartItem',

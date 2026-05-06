@@ -154,6 +154,26 @@ model ProductListImage {
   @@map("productlist_image")
 }
 
+model ProductSoldOut {
+  id        Int      @id @default(autoincrement())
+  smCode    String   @unique @map("sm_code")
+  soldOut   Boolean  @default(true) @map("sold_out")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("product_sold_out")
+}
+
+model ProductNotice {
+  id        Int      @id @default(autoincrement())
+  smCode    String   @unique @map("sm_code")
+  message   String   @db.Text @map("message")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("product_notice")
+}
+
 model Cs {
   gubun          String  @unique @map("cs_gubun")
   code           String  @unique @map("cs_code")

@@ -14,6 +14,8 @@ import { getUser } from "@/lib/utils/user.util";
 import { getCsByUserId } from "../services/cs.service";
 import { ImageUtil } from "@/lib/utils/image.util";
 import { testCodes } from "@/lib/datas/test-codes";
+import { getSoldOutCodes } from "../services/product-sold-out.service";
+import { getNoticeMap } from "../services/product-notice.service";
 
 // 테스트 계정이 아닌 경우 테스트 상품은 보이지 않게
 function checkTestingVisible(ykiho: string, pdName: string) {
@@ -31,6 +33,11 @@ export const getBunryuObjectList = async () => {
   const bunryuObjects: BunryuObject[] = [...webBunryuList];
   const { card } = await getCsByUserId(user?.userId!, { card: true });
   const useCard = (card ?? "0") >= "1"; // 카드 체크기 사용여부
+  const [soldOutCodesArr, noticeMap] = await Promise.all([
+    getSoldOutCodes(),
+    getNoticeMap(),
+  ]);
+  const soldOutCodes = new Set(soldOutCodesArr);
 
   for (const bunryuObj of bunryuObjects) {
     const { code: bunryu } = bunryuObj;
@@ -46,7 +53,12 @@ export const getBunryuObjectList = async () => {
         return acc;
       }
 
-      const obj = Object.assign({ ...cur, ...pls });
+      const obj = Object.assign({
+        ...cur,
+        ...pls,
+        soldOut: soldOutCodes.has(cur.smCode),
+        notice: noticeMap[cur.smCode] ?? "",
+      });
       return acc.concat([obj]);
     }, []);
 
@@ -71,7 +83,8 @@ export async function getProducts() {
   return await db.account.findMany();
 }
 
-export type Products = ProductList & ProductListSub & { src: string };
+export type Products = ProductList &
+  ProductListSub & { src: string; soldOut?: boolean; notice?: string };
 export interface BunryuObject extends ProductListWebBunryu {
   products?: Products[];
 }
