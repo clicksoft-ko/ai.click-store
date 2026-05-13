@@ -16,13 +16,13 @@ interface Props {
 export default function ReorderButton({ paymentItems, className }: Props) {
   const { toggleItemsCountChanged } = useCartStore();
   function handleReorder(): void {
-    reorderAction(paymentItems)
-      .then(() => {
-        toggleItemsCountChanged();
-      })
-      .catch((error: any) => {
-        toast.error(error?.message ?? "재주문 처리 실패");
-      });
+    reorderAction(paymentItems).then((result) => {
+      if (result?.errors?.length) {
+        toast.error(result.errors.join(", "));
+        return;
+      }
+      toggleItemsCountChanged();
+    });
   }
 
   return (

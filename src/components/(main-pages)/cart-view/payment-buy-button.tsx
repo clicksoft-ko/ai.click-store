@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import PaymentMessageModal from "./payment-message-modal";
 import { usePgMessageQuery } from "@/lib/hooks/use-pg-message-query";
 import { excludePgMessage } from "@/db/services/cs.service";
-import { assertNotSoldOut } from "@/db/services/product-sold-out.service";
+import { getSoldOutMessage } from "@/db/services/product-sold-out.service";
 import { toast } from "react-toastify";
 
 export default function PaymentBuyButton() {
@@ -24,13 +24,12 @@ export default function PaymentBuyButton() {
     if (!cartItemsUtil) return;
     if ((cartItemsUtil.cartItemIds.length ?? 0) === 0) return;
 
-    try {
-      const codes =
-        selectedCartItems?.map((ci) => ci.pls?.smCode ?? "").filter(Boolean) ??
-        [];
-      await assertNotSoldOut(codes);
-    } catch (err: any) {
-      toast.error(err?.message ?? "품절된 상품이 포함되어 있습니다.");
+    const codes =
+      selectedCartItems?.map((ci) => ci.pls?.smCode ?? "").filter(Boolean) ??
+      [];
+    const soldOutMsg = await getSoldOutMessage(codes);
+    if (soldOutMsg) {
+      toast.error(soldOutMsg);
       return;
     }
 

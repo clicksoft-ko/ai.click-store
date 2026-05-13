@@ -83,8 +83,11 @@ export async function createCart(): Promise<Cart> {
   return Object.assign(cart);
 }
 
-export async function saveCart(args: AddToCartDto): Promise<boolean> {
-  await assertNotSoldOut([args.code]);
+export async function saveCart(
+  args: AddToCartDto,
+  opts?: { skipSoldOutCheck?: boolean },
+): Promise<boolean> {
+  if (!opts?.skipSoldOutCheck) await assertNotSoldOut([args.code]);
   const cart: Cart = await createCart();
 
   const newCartItem: CartItem = {

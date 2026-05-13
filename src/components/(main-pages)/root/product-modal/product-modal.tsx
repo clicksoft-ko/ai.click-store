@@ -17,6 +17,7 @@ import ServiceButton from "./service-button";
 import useSvrCookie from "@/lib/hooks/use-svr-cookie";
 import { Settings } from "lucide-react";
 import AdminSettingsDialog from "./admin-settings-dialog";
+import { getSoldOutMessage } from "@/db/services/product-sold-out.service";
 
 interface Props extends ModalProps {
   product: Products;
@@ -200,7 +201,13 @@ const useProductModal = ({ open, setOpen, product }: Props) => {
     setFitChecked((prevFit) => !prevFit);
   }
 
-  function saveCart({ toCartView }: { toCartView?: boolean } = {}) {
+  async function saveCart({ toCartView }: { toCartView?: boolean } = {}) {
+    const soldOutMsg = await getSoldOutMessage([product.smCode]);
+    if (soldOutMsg) {
+      setSoldOut(true);
+      toast.error(soldOutMsg);
+      return;
+    }
     cartService
       .saveCart({
         code: product.smCode,
@@ -214,8 +221,8 @@ const useProductModal = ({ open, setOpen, product }: Props) => {
           push(paths.cartView());
         }
       })
-      .catch((error) => {
-        toast.error(error.message);
+      .catch(() => {
+        toast.error("장바구니 저장에 실패했습니다.");
       });
   }
 

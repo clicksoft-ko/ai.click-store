@@ -1,6 +1,7 @@
 "use server";
 import db from "@/db/db";
 import { requireAdmin } from "@/lib/utils/user.util";
+import { resultWrapper2 } from "@/lib/utils/callback.util";
 
 export async function getSoldOutCodes(): Promise<string[]> {
   const list = await db.productSoldOut.findMany({
@@ -8,6 +9,13 @@ export async function getSoldOutCodes(): Promise<string[]> {
     select: { smCode: true },
   });
   return list.map((p) => p.smCode);
+}
+
+export async function getSoldOutMessage(
+  codes: string[],
+): Promise<string | null> {
+  const { errorMessage } = await resultWrapper2(assertNotSoldOut(codes));
+  return errorMessage ?? null;
 }
 
 export async function assertNotSoldOut(codes: string[]): Promise<void> {
