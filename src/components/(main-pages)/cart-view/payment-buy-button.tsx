@@ -6,6 +6,8 @@ import React, { useState } from "react";
 import PaymentMessageModal from "./payment-message-modal";
 import { usePgMessageQuery } from "@/lib/hooks/use-pg-message-query";
 import { excludePgMessage } from "@/db/services/cs.service";
+import { assertNotSoldOut } from "@/db/services/product-sold-out.service";
+import { toast } from "react-toastify";
 
 export default function PaymentBuyButton() {
   const { checkBNPL, selectedCartItems, loading, cartItemsUtil, fetchPayment } =
@@ -18,9 +20,19 @@ export default function PaymentBuyButton() {
   const [open, setOpen] = useState(false);
   const isBnpl = checkBNPL || !cartItemsUtil?.totalPrice;
 
-  function handleBuy(): void {
+  async function handleBuy(): Promise<void> {
     if (!cartItemsUtil) return;
     if ((cartItemsUtil.cartItemIds.length ?? 0) === 0) return;
+
+    try {
+      const codes =
+        selectedCartItems?.map((ci) => ci.pls?.smCode ?? "").filter(Boolean) ??
+        [];
+      await assertNotSoldOut(codes);
+    } catch (err: any) {
+      toast.error(err?.message ?? "품절된 상품이 포함되어 있습니다.");
+      return;
+    }
 
     if (isBnpl) {
       fetchPayment({
@@ -35,13 +47,16 @@ export default function PaymentBuyButton() {
 
   async function handleClick() {
     setPending(true);
-    const excludeMsg = await excludePgMessage();
-    if (excludeMsg || isBnpl || !pgMessage) {
-      handleBuy();
-    } else {
-      setOpen(true);
+    try {
+      const excludeMsg = await excludePgMessage();
+      if (excludeMsg || isBnpl || !pgMessage) {
+        await handleBuy();
+      } else {
+        setOpen(true);
+      }
+    } finally {
+      setPending(false);
     }
-    setPending(false);
   }
 
   return (
