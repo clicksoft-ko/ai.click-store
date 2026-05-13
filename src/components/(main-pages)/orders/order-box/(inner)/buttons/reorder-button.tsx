@@ -4,6 +4,7 @@ import { reorderAction } from "@/db/client-actions/reorder.action";
 import { PaymentItem } from "@/db/models/payment-item";
 import { cn } from "@/lib/utils/shadcn.util";
 import useCartStore from "@/store/cart.store";
+import { toast } from "react-toastify";
 
 import React from "react";
 
@@ -15,9 +16,13 @@ interface Props {
 export default function ReorderButton({ paymentItems, className }: Props) {
   const { toggleItemsCountChanged } = useCartStore();
   function handleReorder(): void {
-    reorderAction(paymentItems).then(() => {
-      toggleItemsCountChanged();
-    });
+    reorderAction(paymentItems)
+      .then(() => {
+        toggleItemsCountChanged();
+      })
+      .catch((error: any) => {
+        toast.error(error?.message ?? "재주문 처리 실패");
+      });
   }
 
   return (

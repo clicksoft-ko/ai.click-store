@@ -7,6 +7,7 @@ import { getUser } from "@/lib/utils/user.util";
 import { CartItem } from "@/db/models/cart-item";
 import { AddToCartDto } from "../dto/cart/add-to-cart.dto";
 import * as cartItemService from "./cart-item.service";
+import { assertNotSoldOut } from "./product-sold-out.service";
 
 export async function getCartWithProduct(): Promise<Cart | undefined> {
   try {
@@ -83,6 +84,7 @@ export async function createCart(): Promise<Cart> {
 }
 
 export async function saveCart(args: AddToCartDto): Promise<boolean> {
+  await assertNotSoldOut([args.code]);
   const cart: Cart = await createCart();
 
   const newCartItem: CartItem = {

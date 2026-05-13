@@ -25,6 +25,7 @@ import { saveOrderReqMsg } from "./order-req-msg.service";
 import { GetAdminPaymentsForTableDto } from "../dto/payment/get-admin-payments-for-table.dto";
 import { PaymentsResult } from "../interfaces/payments-result";
 import { testCodes } from "@/lib/datas/test-codes";
+import { assertNotSoldOut } from "./product-sold-out.service";
 
 const DISP_ITEM_COUNT = 6;
 
@@ -49,6 +50,8 @@ export async function savePayment({
     name: pi.name,
     quantity: pi.quantity,
   }));
+
+  await assertNotSoldOut(paymentItems.map((pi) => pi.code));
 
   const savedPayment = await db.payment.create({
     data: {

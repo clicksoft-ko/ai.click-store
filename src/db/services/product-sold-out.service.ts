@@ -10,6 +10,25 @@ export async function getSoldOutCodes(): Promise<string[]> {
   return list.map((p) => p.smCode);
 }
 
+export async function assertNotSoldOut(codes: string[]): Promise<void> {
+  const uniqueCodes = Array.from(new Set(codes.filter(Boolean)));
+  if (uniqueCodes.length === 0) return;
+
+  const soldOutList = await db.productSoldOut.findMany({
+    where: { smCode: { in: uniqueCodes }, soldOut: true },
+    select: { smCode: true },
+  });
+  if (soldOutList.length === 0) return;
+
+  const names = await db.productListSub.findMany({
+    where: { smCode: { in: soldOutList.map((s) => s.smCode) } },
+    select: { smCode: true, smMyung: true },
+  });
+  const nameMap = new Map(names.map((n) => [n.smCode, n.smMyung]));
+  const labels = soldOutList.map((s) => nameMap.get(s.smCode) ?? s.smCode);
+  throw new Error(`품절된 상품이 포함되어 있어 진행할 수 없습니다: ${labels.join(", ")}`);
+}
+
 export async function toggleSoldOut(smCode: string): Promise<boolean> {
   await requireAdmin();
   if (!smCode) {

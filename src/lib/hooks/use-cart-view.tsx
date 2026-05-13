@@ -132,7 +132,8 @@ const useCartView = ({ onFetch, isPayment, id }: Props) => {
     if (!fetchBNPLPaymentError) return;
 
     toast.error(fetchBNPLPaymentError);
-  }, [fetchBNPLPaymentError]);
+    setLoading(false);
+  }, [fetchBNPLPaymentError, setLoading]);
 
   // onFetch인 경우 최초 조회
   useEffect(() => {

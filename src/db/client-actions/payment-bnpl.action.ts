@@ -45,9 +45,15 @@ export async function paymentBNPLAction({
     };
   }
 
-  await savePayment({
-    payment: Object.assign(data),
-    orderRequestMessage,
-  });
-  await deleteCartItems(data.cartItemIds);
+  try {
+    await savePayment({
+      payment: Object.assign(data),
+      orderRequestMessage,
+    });
+    await deleteCartItems(data.cartItemIds);
+  } catch (err: any) {
+    return {
+      errors: [err.message],
+    };
+  }
 }
