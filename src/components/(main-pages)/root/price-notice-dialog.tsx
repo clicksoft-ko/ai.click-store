@@ -20,8 +20,8 @@ export default function PriceNoticeDialog({
   const STORAGE_KEY = "hide-price-notice-202608";
 
   useEffect(() => {
-    // 2026년 8월 8일부터는 팝업 표시하지 않음 (8월 7일까지 표시)
-    const endDate = new Date(2026, 7, 8);
+    // 2026년 9월 1일부터는 팝업 표시하지 않음 (8월 31일까지 표시)
+    const endDate = new Date(2026, 8, 1);
     const currentDate = new Date();
 
     if (currentDate >= endDate) {
