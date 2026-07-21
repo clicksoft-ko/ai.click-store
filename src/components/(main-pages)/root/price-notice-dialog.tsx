@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import Image from "next/image";
 
 interface PriceNoticeDialogProps {
   isOpen?: boolean;
@@ -53,31 +54,23 @@ export default function PriceNoticeDialog({
 
   return (
     <Dialog open={dialogOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="top-[calc(50dvh_+_(var(--header-height)_+_var(--main-nav-height,0px))/2)] flex max-h-[calc(100dvh_-_var(--header-height)_-_var(--main-nav-height,0px)_-_2rem)] w-[calc(100%-2rem)] max-w-md flex-col rounded-lg">
         <DialogHeader className="text-center font-semibold">
           [공지] 8월 1일 자 제품 판매 가격 인상 안내
         </DialogHeader>
 
-        <div className="flex flex-col space-y-4">
-          <div className="space-y-3 text-sm leading-relaxed text-gray-700">
-            <p>
-              최근 원부자재 및 물품 업체의 공급가 인상으로 인해 부득이하게 용지
-              제품의 판매 가격이 인상됩니다.
-            </p>
-            <p>양해 부탁드립니다.</p>
-            <p>
-              <span className="font-semibold">인상 일시:</span> 2026년 8월 1일
-              주문 건부터 적용
-            </p>
-            <p>
-              <span className="font-semibold">참고사항:</span> 가격 인상 전(7월
-              말까지) 주문 건에 대해서는 기존 가격이 유지되오니, 제품 주문 시
-              일정을 참고해 주시기 바랍니다.
-            </p>
-            <p>감사합니다.</p>
-          </div>
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <Image
+            src="/images/notice.jpg"
+            alt="[공지] 8월 1일 자 제품 판매 가격 인상 안내"
+            width={400}
+            height={600}
+            className="mx-auto h-auto w-auto max-w-full rounded-lg"
+          />
+        </div>
 
-          <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center space-x-2">
             <Checkbox
               id="hide-today"
               onCheckedChange={(checked) => {
@@ -90,13 +83,13 @@ export default function PriceNoticeDialog({
             />
             <label
               htmlFor="hide-today"
-              className="cursor-pointer text-sm text-gray-600"
+              className="cursor-pointer whitespace-nowrap text-sm text-gray-600"
             >
               오늘 하루 보지 않기
             </label>
           </div>
 
-          <Button onClick={handleConfirm} className="w-full">
+          <Button onClick={handleConfirm} className="flex-1">
             확인
           </Button>
         </div>
