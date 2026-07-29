@@ -61,7 +61,7 @@ export default function PriceNoticeDialog({
 
         <div className="min-h-0 flex-1 overflow-y-auto">
           <Image
-            src="/images/notice.jpg"
+            src="/images/notice.jpg?v=20260729"
             alt="[공지] 8월 1일 자 제품 판매 가격 인상 안내"
             width={400}
             height={600}
