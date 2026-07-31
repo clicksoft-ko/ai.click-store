@@ -14,7 +14,7 @@ export async function getLatestPlsList() {
     SELECT pls_smcode smcode, max(pls_smymd) maxymd
     FROM productlistsub
     WHERE pls_jisa = ${jisa}
-    GROUP BY pls_smcode, pls_smymd
+    GROUP BY pls_smcode
   )
   SELECT 
     pls_smcode smCode, pls_smmyung smMyung, pls_smymd smYmd, pls_danga danga, pls_danwi danwi 
