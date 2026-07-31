@@ -14,6 +14,7 @@ export async function getLatestPlsList() {
     SELECT pls_smcode smcode, max(pls_smymd) maxymd
     FROM productlistsub
     WHERE pls_jisa = ${jisa}
+    AND pls_smymd <= DATE_FORMAT(NOW(), '%Y%m%d')
     GROUP BY pls_smcode
   )
   SELECT 
